@@ -6,13 +6,12 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.verifix.model.DefaultResponse;
 
 @RestController
-@RequestMapping(path="/verifix/v1")
+//@RequestMapping(path="/verifix/v1")
 public class BasicResource {
 
 	@GetMapping(path="/")

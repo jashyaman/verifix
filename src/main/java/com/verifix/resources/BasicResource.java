@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.verifix.model.DefaultResponse;
-import com.verifix.model.User;
+import com.verifix.models.DefaultResponse;
+import com.verifix.models.User;
 import com.verifix.services.UserService;
 
 @RestController
@@ -31,7 +31,10 @@ public class BasicResource {
 	
 	@GetMapping(path="/users/all")
 	public ResponseEntity<Map<String, List<User>>> getAllUsers() {
-		return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+		List<User> responseList = userService.getAllUsers();
+		Map<String, List<User>> responseMap = new HashMap<>();
+		responseMap.put("data", responseList);
+		return new ResponseEntity<Map<String,List<User>>>(responseMap, HttpStatus.OK);
 	}
 	
 }

@@ -1,6 +1,10 @@
-package com.verifix.model;
+package com.verifix.models;
 
 public class DefaultResponse {
+	
+	public DefaultResponse() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	private String responseCode;
 	private String responseDescription;

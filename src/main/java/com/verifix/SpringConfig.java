@@ -28,8 +28,11 @@ public class SpringConfig {
 
         if ( this.ed == null ) {
             EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-            this.ed = builder.setType(EmbeddedDatabaseType.HSQL).build();
-        }
+            this.ed = builder.setType(EmbeddedDatabaseType.HSQL)
+            		.addScripts("classpath:dbscript-start.sql").build();
+        } 
+        
+        
 
         return this.ed;
 
@@ -42,7 +45,7 @@ public class SpringConfig {
             = new LocalContainerEntityManagerFactoryBean();
 
         lcemfb.setDataSource(this.hsqlInMemory());
-        lcemfb.setPackagesToScan(new String[] {"com.jverstry"});
+        lcemfb.setPackagesToScan(new String[] {"com.verifix.models"});
 
         lcemfb.setPersistenceUnitName("MyPU");
 

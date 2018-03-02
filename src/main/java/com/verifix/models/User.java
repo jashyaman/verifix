@@ -1,4 +1,4 @@
-package com.verifix.model;
+package com.verifix.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +10,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Users")
 public class User {
+	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)

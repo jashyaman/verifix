@@ -2,6 +2,11 @@ package com.verifix;
 
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -21,30 +26,23 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SpringConfig {
 
 
-    private EmbeddedDatabase ed;
 
-    @Bean(name="hsqlInMemory")
-    public EmbeddedDatabase hsqlInMemory() {
-
-        if ( this.ed == null ) {
-            EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-            this.ed = builder.setType(EmbeddedDatabaseType.HSQL)
-            		.addScripts("classpath:dbscript-start.sql").build();
-        } 
-        
-        
-
-        return this.ed;
-
-    }
-
+   @Bean
+   @Autowired
+   @ConfigurationProperties(prefix = "spring.datasource")
+   public DataSource dataSource() {
+	   return DataSourceBuilder.create().build();
+	   
+   }
+ 
     @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(){
 
         LocalContainerEntityManagerFactoryBean lcemfb
             = new LocalContainerEntityManagerFactoryBean();
 
-        lcemfb.setDataSource(this.hsqlInMemory());
+        lcemfb.setDataSource(dataSource());
         lcemfb.setPackagesToScan(new String[] {"com.verifix.models"});
 
         lcemfb.setPersistenceUnitName("MyPU");
@@ -52,10 +50,8 @@ public class SpringConfig {
         HibernateJpaVendorAdapter va = new HibernateJpaVendorAdapter();
         lcemfb.setJpaVendorAdapter(va);
 
-        Properties ps = new Properties();
-        ps.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-        ps.put("hibernate.hbm2ddl.auto", "create");
-        lcemfb.setJpaProperties(ps);
+       
+//        lcemfb.setJpaProperties(ps);
 
         lcemfb.afterPropertiesSet();
 

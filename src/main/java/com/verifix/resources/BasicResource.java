@@ -10,8 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.verifix.exceptions.EmptyRecordSetException;
 import com.verifix.models.DefaultResponse;
+import com.verifix.models.Project;
+import com.verifix.models.UploadLog;
 import com.verifix.models.User;
+import com.verifix.services.ProjectService;
+import com.verifix.services.UploadLogService;
 import com.verifix.services.UserService;
 
 @RestController
@@ -20,21 +25,67 @@ public class BasicResource {
 	
 	@Autowired
 	UserService userService;
-
+	
+	@Autowired
+	UploadLogService uploadLogService;
+	
+	@Autowired
+	ProjectService projectService;
+	
 	@GetMapping(path="/")
 	public ResponseEntity<Map<String, DefaultResponse>> basicResponse() {
 		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
-		
-		responseMap.put("data", new DefaultResponse("10001", "good data default response", "200", "OK"));
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder("{ \"data\" : \"default\" }");
+		responseMap.put("payload", defaultResponse);
 		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
 	}
 	
 	@GetMapping(path="/users/all")
-	public ResponseEntity<Map<String, List<User>>> getAllUsers() {
+	public ResponseEntity<Map<String, DefaultResponse>> getAllUsers() throws EmptyRecordSetException {
+		
+		
 		List<User> responseList = userService.getAllUsers();
-		Map<String, List<User>> responseMap = new HashMap<>();
-		responseMap.put("data", responseList);
-		return new ResponseEntity<Map<String,List<User>>>(responseMap, HttpStatus.OK);
+
+		if (responseList.size() == 0) 
+			throw new EmptyRecordSetException("uploadlogs have no records");
+		
+		Map<String, DefaultResponse > responseMap = new HashMap<>();
+		
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse );
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
 	}
 	
+	@GetMapping(path="/uploadlogs/all")
+	public ResponseEntity<Map<String, DefaultResponse>> getAllUploadLogs() throws EmptyRecordSetException {
+		List<UploadLog> responseList = uploadLogService.findAllUploadLogs();
+		Map<String, DefaultResponse> responseMap = new HashMap<>();
+		
+		if (responseList.size() == 0) 
+			throw new EmptyRecordSetException("uploadlogs have no records");
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload",defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+		
+	}
+	
+	@GetMapping(path="/projects/all")
+	public ResponseEntity<Map<String, DefaultResponse>> getAllProjecrts() throws EmptyRecordSetException {
+		List<Project> responseList = projectService.findAllProjects();
+		
+		if(responseList.size() == 0) 
+			throw new EmptyRecordSetException("project list has no records");
+		
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
 }

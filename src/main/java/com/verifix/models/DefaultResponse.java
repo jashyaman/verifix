@@ -3,14 +3,28 @@ package com.verifix.models;
 public class DefaultResponse {
 	
 	public DefaultResponse() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	private String responseCode;
 	private String responseDescription;
 	private String statusCode;
 	private String statusDescription;
+	private Object data;
 	
+	public DefaultResponse defaultResourceBuilder(Object data) {
+		this.setData(data);
+		return this;
+	}
+	
+	
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
 	public DefaultResponse(String responseCode, String responseDescription, String statusCode,
 			String statusDescription) {
 		super();

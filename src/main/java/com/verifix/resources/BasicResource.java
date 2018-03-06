@@ -14,9 +14,11 @@ import com.verifix.exceptions.EmptyRecordSetException;
 import com.verifix.models.DefaultResponse;
 import com.verifix.models.Project;
 import com.verifix.models.Role;
+import com.verifix.models.RoleGroup;
 import com.verifix.models.UploadLog;
 import com.verifix.models.User;
 import com.verifix.services.ProjectService;
+import com.verifix.services.RoleGroupService;
 import com.verifix.services.RoleService;
 import com.verifix.services.UploadLogService;
 import com.verifix.services.UserService;
@@ -36,6 +38,9 @@ public class BasicResource {
 	
 	@Autowired
 	ProjectService projectService;
+	
+	@Autowired
+	RoleGroupService roleGroupService;
 	
 	@GetMapping(path="/")
 	public ResponseEntity<Map<String, DefaultResponse>> basicResponse() {
@@ -100,6 +105,21 @@ public class BasicResource {
 		
 		if(responseList.size() == 0) 
 			throw new EmptyRecordSetException("role list has no records");
+		
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/rolegroups/all")
+	public ResponseEntity<Map<String, DefaultResponse>> getAllRoleGroups() throws EmptyRecordSetException {
+		List<RoleGroup> responseList = roleGroupService.findAllRoleGroups();
+		
+		if(responseList.size() == 0) 
+			throw new EmptyRecordSetException("role group list has no records");
 		
 		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
 		

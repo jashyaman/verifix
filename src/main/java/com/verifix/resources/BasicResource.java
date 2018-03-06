@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.verifix.exceptions.EmptyRecordSetException;
 import com.verifix.models.DefaultResponse;
 import com.verifix.models.Project;
+import com.verifix.models.Role;
 import com.verifix.models.UploadLog;
 import com.verifix.models.User;
 import com.verifix.services.ProjectService;
+import com.verifix.services.RoleService;
 import com.verifix.services.UploadLogService;
 import com.verifix.services.UserService;
 
@@ -28,6 +30,9 @@ public class BasicResource {
 	
 	@Autowired
 	UploadLogService uploadLogService;
+	
+	@Autowired
+	RoleService roleService;
 	
 	@Autowired
 	ProjectService projectService;
@@ -75,11 +80,26 @@ public class BasicResource {
 	}
 	
 	@GetMapping(path="/projects/all")
-	public ResponseEntity<Map<String, DefaultResponse>> getAllProjecrts() throws EmptyRecordSetException {
+	public ResponseEntity<Map<String, DefaultResponse>> getAllProjects() throws EmptyRecordSetException {
 		List<Project> responseList = projectService.findAllProjects();
 		
 		if(responseList.size() == 0) 
 			throw new EmptyRecordSetException("project list has no records");
+		
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/roles/all")
+	public ResponseEntity<Map<String, DefaultResponse>> getAllRoles() throws EmptyRecordSetException {
+		List<Role> responseList = roleService.findAllRoles();
+		
+		if(responseList.size() == 0) 
+			throw new EmptyRecordSetException("role list has no records");
 		
 		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
 		

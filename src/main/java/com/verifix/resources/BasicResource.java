@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.verifix.exceptions.EmptyRecordSetException;
 import com.verifix.models.DefaultResponse;
 import com.verifix.models.Project;
+import com.verifix.models.Resource;
 import com.verifix.models.Role;
 import com.verifix.models.RoleGroup;
 import com.verifix.models.UploadLog;
 import com.verifix.models.User;
 import com.verifix.services.ProjectService;
+import com.verifix.services.ResourceService;
 import com.verifix.services.RoleGroupService;
 import com.verifix.services.RoleService;
 import com.verifix.services.UploadLogService;
@@ -41,6 +43,9 @@ public class BasicResource {
 	
 	@Autowired
 	RoleGroupService roleGroupService;
+	
+	@Autowired
+	ResourceService resourceService;
 	
 	@GetMapping(path="/")
 	public ResponseEntity<Map<String, DefaultResponse>> basicResponse() {
@@ -120,6 +125,21 @@ public class BasicResource {
 		
 		if(responseList.size() == 0) 
 			throw new EmptyRecordSetException("role group list has no records");
+		
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/resources/all")
+	public ResponseEntity<Map<String, DefaultResponse>> getAllResource() throws EmptyRecordSetException {
+		List<Resource> responseList = resourceService.findAllResources();
+		
+		if(responseList.size() == 0) 
+			throw new EmptyRecordSetException("resource list has no records");
 		
 		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
 		

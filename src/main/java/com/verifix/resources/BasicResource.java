@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.verifix.exceptions.EmptyRecordSetException;
 import com.verifix.models.DefaultResponse;
 import com.verifix.models.Project;
+import com.verifix.models.ResRgMap;
 import com.verifix.models.Resource;
 import com.verifix.models.ResourceGroup;
 import com.verifix.models.Role;
@@ -22,6 +24,7 @@ import com.verifix.models.UploadLog;
 import com.verifix.models.User;
 import com.verifix.services.ProjectService;
 import com.verifix.services.ResourceGroupService;
+import com.verifix.services.ResourceResourceGroupMapService;
 import com.verifix.services.ResourceService;
 import com.verifix.services.RoleGroupService;
 import com.verifix.services.RoleService;
@@ -52,6 +55,9 @@ public class BasicResource {
 	
 	@Autowired
 	ResourceGroupService resourceGroupService;
+	
+	@Autowired
+	ResourceResourceGroupMapService resrgService;
 	
 	@GetMapping(path="/")
 	public ResponseEntity<Map<String, DefaultResponse>> basicResponse() {
@@ -161,6 +167,21 @@ public class BasicResource {
 		
 		if(responseList.size() == 0) 
 			throw new EmptyRecordSetException("resource list has no records");
+		
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
+
+	@GetMapping(path="/resrgmap/{resgid}")
+	public ResponseEntity<Map<String, DefaultResponse>> findresourcesForGroupId(@PathVariable("resgid") int resourceGroupId) throws EmptyRecordSetException {
+		List<ResRgMap> responseList = resrgService.findResourceOfResourceGroup(resourceGroupId);
+		
+		if(responseList.size() == 0) 
+			throw new EmptyRecordSetException("res rg map list has no records");
 		
 		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
 		

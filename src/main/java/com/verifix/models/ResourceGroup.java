@@ -15,13 +15,17 @@ import javax.persistence.Table;
 @Entity
 @Table(name="resource_group")
 public class ResourceGroup {
+	
+	public ResourceGroup() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="resource_group_id")
 	private int resourceGroupId;
 	
-	@Column(name="resource_name")
+	@Column(name="resource_group_name")
 	private String resourceGroupName;
 	
 	@Column(name="creator_id")

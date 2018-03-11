@@ -13,6 +13,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name="modification_log")
 public class ModificationLogs {
+	
+	public ModificationLogs() {
+		// TODO Auto-generated constructor stub
+	}
 
 
 	@Id

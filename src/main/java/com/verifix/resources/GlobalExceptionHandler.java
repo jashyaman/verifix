@@ -1,5 +1,6 @@
 package com.verifix.resources;
 
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,6 +34,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
     Map<String,DefaultResponse> handleException(IllegalArgumentException ex) {
         Map<String,DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
         DefaultResponse defaultResponse = new DefaultResponse("1002", "issue with returned arguments", HttpStatus.INTERNAL_SERVER_ERROR.name(), ex.getMessage());
+        responseMap.put("payload", defaultResponse.defaultResourceBuilder("error"));
+        return responseMap;
+    }
+    
+    
+    
+    
+    @ExceptionHandler
+    @ResponseBody
+    Map<String,DefaultResponse> handleException(MissingPathVariableException ex) {
+        Map<String,DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+        DefaultResponse defaultResponse = new DefaultResponse("1002", "issue with input arguments (missing)", HttpStatus.BAD_REQUEST.name(), ex.getMessage());
         responseMap.put("payload", defaultResponse.defaultResourceBuilder("error"));
         return responseMap;
     }

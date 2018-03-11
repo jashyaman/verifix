@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.verifix.exceptions.EmptyRecordSetException;
 import com.verifix.models.DefaultResponse;
+import com.verifix.models.ModificationLogs;
 import com.verifix.models.Project;
 import com.verifix.models.ResRgMap;
 import com.verifix.models.Resource;
@@ -22,6 +24,7 @@ import com.verifix.models.Role;
 import com.verifix.models.RoleGroup;
 import com.verifix.models.UploadLog;
 import com.verifix.models.User;
+import com.verifix.services.ModificationLogsService;
 import com.verifix.services.ProjectService;
 import com.verifix.services.ResourceGroupService;
 import com.verifix.services.ResourceResourceGroupMapService;
@@ -58,6 +61,9 @@ public class BasicResource {
 	
 	@Autowired
 	ResourceResourceGroupMapService resrgService;
+	
+	@Autowired
+	ModificationLogsService modificationLogService;
 	
 	@GetMapping(path="/")
 	public ResponseEntity<Map<String, DefaultResponse>> basicResponse() {
@@ -177,7 +183,7 @@ public class BasicResource {
 	}
 
 	@GetMapping(path="/resrgmap/{resgid}")
-	public ResponseEntity<Map<String, DefaultResponse>> findresourcesForGroupId(@PathVariable("resgid") int resourceGroupId) throws EmptyRecordSetException {
+	public ResponseEntity<Map<String, DefaultResponse>> findresourcesForGroupId(@PathVariable("resgid") int resourceGroupId) throws EmptyRecordSetException, MissingPathVariableException {
 		List<ResRgMap> responseList = resrgService.findResourceOfResourceGroup(resourceGroupId);
 		
 		if(responseList.size() == 0) 
@@ -189,5 +195,20 @@ public class BasicResource {
 		defaultResponse.defaultResourceBuilder(responseList);
 		responseMap.put("payload", defaultResponse);
 		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/modificationlog/all")
+	public ResponseEntity<Map<String, DefaultResponse>> findAllModificationLogs() throws EmptyRecordSetException {
+		List<ModificationLogs> responseList = modificationLogService.findAllModificationLogs();		
+		if(responseList.size() == 0) 
+			throw new EmptyRecordSetException("res rg map list has no records");
+		
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+		
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String,DefaultResponse>>(responseMap, HttpStatus.OK);
+		
 	}
 }

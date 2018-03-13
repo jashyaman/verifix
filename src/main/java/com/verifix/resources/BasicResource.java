@@ -142,6 +142,29 @@ public class BasicResource {
 		responseMap.put("payload", defaultResponse);
 		return new ResponseEntity<Map<String, DefaultResponse>>(responseMap, HttpStatus.OK);
 	}
+	
+	/*
+	 * accepts userid as input, provides list of roles associated with the user as output
+	 */
+
+	@GetMapping(path = "/finduserroles/{userid}")
+	public ResponseEntity<Map<String, DefaultResponse>> findUserRoles(@PathVariable String userid) throws EmptyRecordSetException {
+		List<Role> responseList = roleService.findUserRoles(userid);
+
+		if (responseList.size() == 0)
+			throw new EmptyRecordSetException("search for user with id "+userid+" returns role list that has no records");
+
+		Map<String, DefaultResponse> responseMap = new HashMap<String, DefaultResponse>();
+
+		DefaultResponse defaultResponse = new DefaultResponse("10001", "good data default response", "200", "OK");
+		defaultResponse.defaultResourceBuilder(responseList);
+		responseMap.put("payload", defaultResponse);
+		return new ResponseEntity<Map<String, DefaultResponse>>(responseMap, HttpStatus.OK);
+	}
+	
+	
+	
+	
 
 	@GetMapping(path = "/rolegroups/all")
 	public ResponseEntity<Map<String, DefaultResponse>> getAllRoleGroups() throws EmptyRecordSetException {

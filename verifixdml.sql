@@ -63,3 +63,13 @@ project_owner_id, create_timestamp, updater_id, updater_timestamp)
 values
 (111001, 'sample project', 'sample project no description', 101101,
 101, now(), null, null );
+
+
+
+insert into 
+project
+(project_id, project_name, project_description, resource_group_id,
+project_owner_id, create_timestamp, updater_id, updater_timestamp)
+values
+(111002, 'sample project2', 'sample project2 no description', 101101,
+101, now(), null, null );

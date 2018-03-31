@@ -11,3 +11,4 @@ ${hostname}:${port}/verifix/v1
 /resrgmap/{resgid}
 /notificationlog/all
 /credentialsvalidate
+.

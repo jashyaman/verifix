@@ -1,0 +1,26 @@
+{
+"addresses": [
+{
+"athenaId": 574594001,
+"buildingMasterId": 232032705,
+"physicalAddressLine1": "4000 LAKE TAHOE BLVD",
+"physicalAddressLine2": null,
+"physicalCityName": "SOUTH LAKE TAHOE",
+"physicalStateCode": "CA",
+"physicalZipCode": "96150",
+"physicalZip4": "7071",
+"radiusLatitude": "38.95456",
+"radiusLongitude": "-119.945102"
+},
+{
+"athenaId": 575087613,
+"buildingMasterId": 225305146,
+"physicalAddressLine1": "1001 HEAVENLY VILLAGE WAY",
+"physicalAddressLine2": "STE 29",
+"physicalCityName": "SOUTH LAKE TAHOE",
+"physicalStateCode": "CA",
+"physicalZipCode": "96150",
+"physicalZip4": "6985",
+"radiusLatitude": "38.95534",
+"radiusLongitude": "-119.94451"
+}]}
